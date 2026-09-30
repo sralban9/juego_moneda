@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Ahorrar - Mi Dinero COP</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/estilo.css') }}">
+
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <h1>🏦 Vamos a ahorrar</h1>
+
+    <p class="subtitulo">
+        Aprende a guardar dinero para alcanzar una meta.
+    </p>
+
+    <div class="ejercicio">
+
+        <h2>🎯 Mi meta</h2>
+
+        <div class="meta">
+
+            <div class="meta-icono">
+                🎁
+            </div>
+
+            <h2 id="nombre-meta">
+                Quiero ahorrar para un regalo
+            </h2>
+
+            <p>
+                Necesitas ahorrar:
+            </p>
+
+            <strong id="meta">
+                $10.000
+            </strong>
+
+        </div>
+
+
+        <h2>💰 Elige dinero para ahorrar</h2>
+
+        <div id="dinero"
+             class="dinero-real">
+        </div>
+
+
+        <h2>
+            💵 Has ahorrado:
+            <strong id="ahorrado">$0</strong>
+        </h2>
+
+
+        <div class="barra">
+
+            <div id="progreso"
+                 class="progreso">
+            </div>
+
+        </div>
+
+
+        <p id="mensaje"
+           class="mensaje">
+
+            Elige una moneda o un billete.
+
+        </p>
+
+
+        <div class="acciones-ahorro">
+
+            <button
+                class="boton-ahorro"
+                onclick="agregarDinero()">
+
+                💰 Agregar dinero
+
+            </button>
+
+            <button
+                class="boton-limpiar"
+                onclick="reiniciarAhorro()">
+
+                🔄 Empezar de nuevo
+
+            </button>
+
+        </div>
+
+
+        <div class="puntos">
+
+            ⭐ Puntos:
+            <span id="puntos">0</span>
+
+        </div>
+
+    </div>
+
+
+    <a href="/" class="volver">
+
+        ⬅ Volver al inicio
+
+    </a>
+
+</div>
+
+
+<script>
+
+// ==========================================
+// DINERO DISPONIBLE
+// ==========================================
+
+const dineroDisponible = [
+
+    {
+        valor: 100,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_100.jpg') }}",
+        nombre: "Moneda de $100"
+    },
+
+    {
+        valor: 500,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_500.jpg') }}",
+        nombre: "Moneda de $500"
+    },
+
+    {
+        valor: 1000,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_1000.jpg') }}",
+        nombre: "Moneda de $1.000"
+    },
+
+    {
+        valor: 2000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_2000.jpg') }}",
+        nombre: "Billete de $2.000"
+    },
+
+    {
+        valor: 5000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_5000.jpg') }}",
+        nombre: "Billete de $5.000"
+    },
+
+    {
+        valor: 10000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_10000.jpg') }}",
+        nombre: "Billete de $10.000"
+    },
+
+    {
+        valor: 20000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_20000.jpg') }}",
+        nombre: "Billete de $20.000"
+    }
+
+];
+
+
+// ==========================================
+// METAS
+// ==========================================
+
+const metas = [
+
+    {
+        nombre: "Un regalo 🎁",
+        meta: 5000
+    },
+
+    {
+        nombre: "Un juguete 🧸",
+        meta: 10000
+    },
+
+    {
+        nombre: "Un libro 📚",
+        meta: 20000
+    },
+
+    {
+        nombre: "Una mochila 🎒",
+        meta: 50000
+    }
+
+];
+
+
+// ==========================================
+// VARIABLES
+// ==========================================
+
+let metaActual = 0;
+
+let ahorrado = 0;
+
+let dineroSeleccionado = null;
+
+let puntos = 0;
+
+
+// ==========================================
+// FORMATO DE PESOS
+// ==========================================
+
+function pesos(numero) {
+
+    return "$" +
+           numero.toLocaleString("es-CO");
+
+}
+
+
+// ==========================================
+// MOSTRAR DINERO
+// ==========================================
+
+function mostrarDinero() {
+
+    const contenedor =
+        document.getElementById("dinero");
+
+    contenedor.innerHTML = "";
+
+
+    dineroDisponible.forEach(
+        function(dinero) {
+
+            const tarjeta =
+                document.createElement("div");
+
+
+            tarjeta.className =
+                "dinero-item dinero-seleccionable";
+
+
+            tarjeta.innerHTML = `
+
+                <img
+                    src="${dinero.imagen}"
+                    alt="${dinero.nombre}"
+                >
+
+                <strong>
+                    ${pesos(dinero.valor)}
+                </strong>
+
+            `;
+
+
+            tarjeta.onclick =
+                function() {
+
+                    seleccionarDinero(
+                        dinero,
+                        tarjeta
+                    );
+
+                };
+
+
+            contenedor.appendChild(
+                tarjeta
+            );
+
+        }
+    );
+
+}
+
+
+// ==========================================
+// SELECCIONAR DINERO
+// ==========================================
+
+function seleccionarDinero(
+    dinero,
+    tarjeta
+) {
+
+    document
+        .querySelectorAll(
+            ".dinero-seleccionable"
+        )
+        .forEach(
+            function(elemento) {
+
+                elemento.classList.remove(
+                    "dinero-elegido"
+                );
+
+            }
+        );
+
+
+    tarjeta.classList.add(
+        "dinero-elegido"
+    );
+
+
+    dineroSeleccionado =
+        dinero;
+
+
+    document.getElementById(
+        "mensaje"
+    ).innerHTML =
+
+        "Has elegido " +
+        dinero.nombre +
+        ".<br>" +
+        "Pulsa <strong>Agregar dinero</strong> para ahorrar.";
+
+}
+
+
+// ==========================================
+// AGREGAR DINERO
+// ==========================================
+
+function agregarDinero() {
+
+    const mensaje =
+        document.getElementById(
+            "mensaje"
+        );
+
+
+    if (!dineroSeleccionado) {
+
+        mensaje.innerHTML =
+            "👆 Primero elige una moneda o un billete.";
+
+        return;
+
+    }
+
+
+    ahorrado +=
+        dineroSeleccionado.valor;
+
+
+    actualizarPantalla();
+
+
+    if (ahorrado >= metaActual) {
+
+        puntos++;
+
+
+        document.getElementById(
+            "puntos"
+        ).innerText =
+            puntos;
+
+
+        mensaje.innerHTML =
+
+            "🎉🎉 ¡META CONSEGUIDA! 🎉🎉<br><br>" +
+
+            "Has ahorrado " +
+            pesos(ahorrado) +
+            ".<br>" +
+
+            "¡Excelente trabajo!";
+
+
+        mensaje.className =
+            "mensaje meta-conseguida";
+
+
+        dineroSeleccionado =
+            null;
+
+
+    } else {
+
+        const falta =
+            metaActual - ahorrado;
+
+
+        mensaje.innerHTML =
+
+            "👏 ¡Muy bien!<br><br>" +
+
+            "Te faltan " +
+            pesos(falta) +
+            " para alcanzar tu meta.";
+
+    }
+
+
+    document
+        .querySelectorAll(
+            ".dinero-seleccionable"
+        )
+        .forEach(
+            function(elemento) {
+
+                elemento.classList.remove(
+                    "dinero-elegido"
+                );
+
+            }
+        );
+
+}
+
+
+// ==========================================
+// ACTUALIZAR PANTALLA
+// ==========================================
+
+function actualizarPantalla() {
+
+    document.getElementById(
+        "ahorrado"
+    ).innerText =
+        pesos(ahorrado);
+
+
+    let porcentaje =
+        (ahorrado / metaActual) * 100;
+
+
+    if (porcentaje > 100) {
+
+        porcentaje = 100;
+
+    }
+
+
+    document.getElementById(
+        "progreso"
+    ).style.width =
+        porcentaje + "%";
+
+}
+
+
+// ==========================================
+// NUEVA META
+// ==========================================
+
+function nuevaMeta() {
+
+    const seleccion =
+        metas[
+            Math.floor(
+                Math.random() *
+                metas.length
+            )
+        ];
+
+
+    metaActual =
+        seleccion.meta;
+
+
+    document.getElementById(
+        "nombre-meta"
+    ).innerText =
+        seleccion.nombre;
+
+
+    document.getElementById(
+        "meta"
+    ).innerText =
+        pesos(metaActual);
+
+}
+
+
+// ==========================================
+// REINICIAR
+// ==========================================
+
+function reiniciarAhorro() {
+
+    ahorrado = 0;
+
+    dineroSeleccionado = null;
+
+
+    document.getElementById(
+        "ahorrado"
+    ).innerText =
+        "$0";
+
+
+    document.getElementById(
+        "progreso"
+    ).style.width =
+        "0%";
+
+
+    document.getElementById(
+        "mensaje"
+    ).innerHTML =
+        "Elige una moneda o un billete.";
+
+
+    document.getElementById(
+        "mensaje"
+    ).className =
+        "mensaje";
+
+
+    document
+        .querySelectorAll(
+            ".dinero-seleccionable"
+        )
+        .forEach(
+            function(elemento) {
+
+                elemento.classList.remove(
+                    "dinero-elegido"
+                );
+
+            }
+        );
+
+}
+
+
+// ==========================================
+// INICIAR
+// ==========================================
+
+nuevaMeta();
+
+mostrarDinero();
+
+actualizarPantalla();
+
+</script>
+
+</body>
+
+</html>

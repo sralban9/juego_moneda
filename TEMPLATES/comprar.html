@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Comprar - Mi Dinero COP</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/estilo.css') }}">
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <h1>🛒 Vamos a comprar</h1>
+
+    <p class="subtitulo">
+        Mira el precio y cuenta el dinero que tienes.
+    </p>
+
+    <div class="ejercicio">
+
+        <!-- PRODUCTO -->
+        <div class="producto">
+
+            <div id="producto-imagen" class="producto-imagen">
+                🍎
+            </div>
+
+            <h2 id="producto-nombre">
+                Una manzana
+            </h2>
+
+            <p class="precio">
+                Precio:
+                <strong id="precio">$500</strong>
+            </p>
+
+        </div>
+
+        <!-- DINERO -->
+        <h2>💰 Dinero que tienes</h2>
+
+        <div id="dinero" class="dinero-real">
+        </div>
+
+        <!-- TOTAL -->
+        <h2>
+            Tienes en total:
+            <strong id="total">$0</strong>
+        </h2>
+
+        <h2>
+            ¿Puedes comprar este producto?
+        </h2>
+
+        <div class="opciones">
+
+            <button onclick="comprobar(true)">
+                ✅ Sí, puedo comprarlo
+            </button>
+
+            <button onclick="comprobar(false)">
+                ❌ No puedo comprarlo
+            </button>
+
+        </div>
+
+        <p id="resultado"></p>
+
+        <div class="puntos">
+            ⭐ Puntos:
+            <span id="puntos">0</span>
+        </div>
+
+        <button
+            class="nuevo-ejercicio"
+            onclick="nuevoEjercicio()">
+
+            🛒 Nueva compra
+
+        </button>
+
+    </div>
+
+    <a href="/" class="volver">
+        ⬅ Volver al inicio
+    </a>
+
+</div>
+
+
+<script>
+
+// ==========================================
+// DINERO DISPONIBLE
+// ==========================================
+
+const dineroDisponible = [
+
+    {
+        valor: 100,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_100.jpg') }}",
+        nombre: "Moneda de $100"
+    },
+
+    {
+        valor: 500,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_500.jpg') }}",
+        nombre: "Moneda de $500"
+    },
+
+    {
+        valor: 1000,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_1000.jpg') }}",
+        nombre: "Moneda de $1.000"
+    },
+
+    {
+        valor: 2000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_2000.jpg') }}",
+        nombre: "Billete de $2.000"
+    },
+
+    {
+        valor: 5000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_5000.jpg') }}",
+        nombre: "Billete de $5.000"
+    },
+
+    {
+        valor: 10000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_10000.jpg') }}",
+        nombre: "Billete de $10.000"
+    },
+
+    {
+        valor: 20000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_20000.jpg') }}",
+        nombre: "Billete de $20.000"
+    },
+
+    {
+        valor: 50000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_50000.jpg') }}",
+        nombre: "Billete de $50.000"
+    },
+
+    {
+        valor: 100000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_100000.jpg') }}",
+        nombre: "Billete de $100.000"
+    }
+
+];
+
+
+// ==========================================
+// PRODUCTOS
+// ==========================================
+
+const productos = [
+
+    {
+        nombre: "Una manzana",
+        imagen: "🍎",
+        precio: 500
+    },
+
+    {
+        nombre: "Un jugo",
+        imagen: "🧃",
+        precio: 1000
+    },
+
+    {
+        nombre: "Un pan",
+        imagen: "🥖",
+        precio: 2000
+    },
+
+    {
+        nombre: "Un cuaderno",
+        imagen: "📓",
+        precio: 5000
+    },
+
+    {
+        nombre: "Una camiseta",
+        imagen: "👕",
+        precio: 10000
+    },
+
+    {
+        nombre: "Una mochila",
+        imagen: "🎒",
+        precio: 20000
+    }
+
+];
+
+
+// ==========================================
+// VARIABLES
+// ==========================================
+
+let precioProducto = 0;
+let totalDinero = 0;
+let puntos = 0;
+
+
+// ==========================================
+// FORMATO DE PESOS
+// ==========================================
+
+function pesos(numero) {
+
+    return "$" + numero.toLocaleString("es-CO");
+
+}
+
+
+// ==========================================
+// NUEVO EJERCICIO
+// ==========================================
+
+function nuevoEjercicio() {
+
+    const resultado =
+        document.getElementById("resultado");
+
+    resultado.innerHTML = "";
+    resultado.className = "";
+
+    // Elegir producto aleatorio
+
+    const producto =
+        productos[
+            Math.floor(
+                Math.random() * productos.length
+            )
+        ];
+
+    precioProducto = producto.precio;
+
+
+    // Mostrar producto
+
+    document.getElementById(
+        "producto-imagen"
+    ).innerText = producto.imagen;
+
+    document.getElementById(
+        "producto-nombre"
+    ).innerText = producto.nombre;
+
+    document.getElementById(
+        "precio"
+    ).innerText = pesos(producto.precio);
+
+
+    // Crear dinero
+
+    const dinero =
+        document.getElementById("dinero");
+
+    dinero.innerHTML = "";
+
+    totalDinero = 0;
+
+
+    // Cantidad de monedas/billetes
+
+    const cantidad =
+        Math.floor(Math.random() * 4) + 2;
+
+
+    for (let i = 0; i < cantidad; i++) {
+
+        const indice =
+            Math.floor(
+                Math.random() * dineroDisponible.length
+            );
+
+        const elemento =
+            dineroDisponible[indice];
+
+
+        totalDinero += elemento.valor;
+
+
+        const tarjeta =
+            document.createElement("div");
+
+        tarjeta.className = "dinero-item";
+
+
+        tarjeta.innerHTML = `
+
+            <img
+                src="${elemento.imagen}"
+                alt="${elemento.nombre}"
+            >
+
+            <strong>
+                ${pesos(elemento.valor)}
+            </strong>
+
+        `;
+
+
+        dinero.appendChild(tarjeta);
+
+    }
+
+
+    // Mostrar total
+
+    document.getElementById(
+        "total"
+    ).innerText = pesos(totalDinero);
+
+}
+
+
+// ==========================================
+// COMPROBAR RESPUESTA
+// ==========================================
+
+function comprobar(respuesta) {
+
+    const resultado =
+        document.getElementById("resultado");
+
+
+    const puedeComprar =
+        totalDinero >= precioProducto;
+
+
+    if (respuesta === puedeComprar) {
+
+        puntos++;
+
+        document.getElementById(
+            "puntos"
+        ).innerText = puntos;
+
+
+        if (puedeComprar) {
+
+            resultado.innerHTML =
+                "🎉 ¡Muy bien!<br><br>" +
+                "Tienes " +
+                pesos(totalDinero) +
+                " y el producto cuesta " +
+                pesos(precioProducto) +
+                ".";
+
+        } else {
+
+            resultado.innerHTML =
+                "🎉 ¡Muy bien!<br><br>" +
+                "No tienes suficiente dinero.<br>" +
+                "Tienes " +
+                pesos(totalDinero) +
+                " y necesitas " +
+                pesos(precioProducto) +
+                ".";
+
+        }
+
+
+        resultado.className = "correcto";
+
+    } else {
+
+        resultado.innerHTML =
+            "🙂 Inténtalo nuevamente.<br><br>" +
+            "Mira el precio y suma el dinero que tienes.";
+
+        resultado.className = "incorrecto";
+
+    }
+
+}
+
+
+// ==========================================
+// INICIAR
+// ==========================================
+
+nuevoEjercicio();
+
+</script>
+
+</body>
+
+</html>

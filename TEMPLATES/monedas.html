@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monedas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <h1>🪙 Conoce las monedas</h1>
+
+    <p class="subtitulo">
+        Estas son las monedas que vamos a aprender.
+    </p>
+
+    <div class="dinero">
+
+    <div class="moneda">
+        <img src="{{ url_for('static', filename='img/monedas/moneda_100.jpg') }}"
+             alt="Moneda colombiana de 100 pesos">
+        <h2>$100</h2>
+        <p>Cien pesos</p>
+    </div>
+
+    <div class="moneda">
+        <img src="{{ url_for('static', filename='img/monedas/moneda_500.jpg') }}"
+             alt="Moneda colombiana de 500 pesos">
+        <h2>$500</h2>
+        <p>Quinientos pesos</p>
+    </div>
+
+    <div class="moneda">
+        <img src="{{ url_for('static', filename='img/monedas/moneda_1000.jpg') }}"
+             alt="Moneda colombiana de 1000 pesos">
+        <h2>$1.000</h2>
+        <p>Mil pesos</p>
+    </div>
+
+</div>
+
+</body>
+</html>

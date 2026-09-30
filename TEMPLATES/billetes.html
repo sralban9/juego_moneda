@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billetes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilo.css') }}">
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <h1>💵 Conoce los billetes</h1>
+
+    <p class="subtitulo">
+        Aprende cuánto vale cada billete.
+    </p>
+
+    <div class="billetes">
+
+    <div class="billete">
+        <img src="{{ url_for('static', filename='img/billetes/billete_2000.jpg') }}">
+        <h2>$2.000</h2>
+        <p>Dos mil pesos</p>
+    </div>
+
+    <div class="billete">
+        <img src="{{ url_for('static', filename='img/billetes/billete_5000.jpg') }}">
+        <h2>$5.000</h2>
+        <p>Cinco mil pesos</p>
+    </div>
+
+    <div class="billete">
+        <img src="{{ url_for('static', filename='img/billetes/billete_10000.jpg') }}">
+        <h2>$10.000</h2>
+        <p>Diez mil pesos</p>
+    </div>
+
+    <div class="billete">
+        <img src="{{ url_for('static', filename='img/billetes/billete_20000.jpg') }}">
+        <h2>$20.000</h2>
+        <p>Veinte mil pesos</p>
+    </div>
+
+    <div class="billete">
+        <img src="{{ url_for('static', filename='img/billetes/billete_50000.jpg') }}">
+        <h2>$50.000</h2>
+        <p>Cincuenta mil pesos</p>
+    </div>
+
+    <div class="billete">
+        <img src="{{ url_for('static', filename='img/billetes/billete_100000.jpg') }}">
+        <h2>$100.000</h2>
+        <p>Cien mil pesos</p>
+    </div>
+
+</div>
+
+    <a href="/" class="volver">⬅ Volver</a>
+
+</div>
+
+</body>
+</html>

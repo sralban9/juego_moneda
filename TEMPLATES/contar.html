@@ -1,0 +1,326 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Contar dinero - Mi Dinero COP</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/estilo.css') }}">
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <h1>➕ Contar dinero</h1>
+
+    <p class="subtitulo">
+        Mira el dinero y calcula cuánto hay en total.
+    </p>
+
+    <div class="ejercicio">
+
+        <h2>¿Cuánto dinero hay?</h2>
+
+        <div id="dinero" class="dinero-real"></div>
+
+        <p class="pregunta">
+            ¿Cuánto dinero hay en total?
+        </p>
+
+        <div id="opciones" class="opciones"></div>
+
+        <p id="resultado"></p>
+
+        <button class="nuevo-ejercicio" onclick="nuevoEjercicio()">
+            🎲 Nuevo ejercicio
+        </button>
+
+        <p class="puntos">
+            ⭐ Puntos: <span id="puntos">0</span>
+        </p>
+
+    </div>
+
+    <a href="/" class="volver">
+        ⬅ Volver al inicio
+    </a>
+
+</div>
+
+
+<script>
+
+/*
+    DINERO DISPONIBLE
+*/
+
+const dineroDisponible = [
+
+    {
+        valor: 100,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_100.jpg') }}",
+        nombre: "Moneda de $100"
+    },
+
+    {
+        valor: 500,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_500.jpg') }}",
+        nombre: "Moneda de $500"
+    },
+
+    {
+        valor: 1000,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_1000.jpg') }}",
+        nombre: "Moneda de $1.000"
+    },
+
+    {
+        valor: 2000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_2000.jpg') }}",
+        nombre: "Billete de $2.000"
+    },
+
+    {
+        valor: 5000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_5000.jpg') }}",
+        nombre: "Billete de $5.000"
+    },
+
+    {
+        valor: 10000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_10000.jpg') }}",
+        nombre: "Billete de $10.000"
+    },
+
+    {
+        valor: 20000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_20000.jpg') }}",
+        nombre: "Billete de $20.000"
+    },
+
+    {
+        valor: 50000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_50000.jpg') }}",
+        nombre: "Billete de $50.000"
+    },
+
+    {
+        valor: 100000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_100000.jpg') }}",
+        nombre: "Billete de $100.000"
+    }
+
+];
+
+
+/*
+    VARIABLES
+*/
+
+let respuestaCorrecta = 0;
+let puntos = 0;
+
+
+/*
+    FORMATEAR PESOS
+*/
+
+function pesos(numero) {
+
+    return "$" + numero.toLocaleString("es-CO");
+
+}
+
+
+/*
+    ELEGIR DINERO ALEATORIO
+*/
+
+function nuevoEjercicio() {
+
+    const dinero = document.getElementById("dinero");
+    const opciones = document.getElementById("opciones");
+    const resultado = document.getElementById("resultado");
+
+    dinero.innerHTML = "";
+    opciones.innerHTML = "";
+    resultado.innerHTML = "";
+
+    resultado.className = "";
+
+
+    /*
+        Elegimos entre 2 y 4 monedas/billetes
+    */
+
+    const cantidad = Math.floor(Math.random() * 3) + 2;
+
+    let seleccionados = [];
+
+    let total = 0;
+
+
+    for (let i = 0; i < cantidad; i++) {
+
+        const indice =
+            Math.floor(Math.random() * dineroDisponible.length);
+
+        const elemento =
+            dineroDisponible[indice];
+
+        seleccionados.push(elemento);
+
+        total += elemento.valor;
+
+    }
+
+
+    respuestaCorrecta = total;
+
+
+    /*
+        MOSTRAR DINERO
+    */
+
+    seleccionados.forEach(function(elemento) {
+
+        const tarjeta = document.createElement("div");
+
+        tarjeta.className = "dinero-item";
+
+        tarjeta.innerHTML = `
+
+            <img src="${elemento.imagen}"
+                 alt="${elemento.nombre}">
+
+            <strong>${pesos(elemento.valor)}</strong>
+
+        `;
+
+        dinero.appendChild(tarjeta);
+
+    });
+
+
+    /*
+        CREAR RESPUESTAS
+    */
+
+    let respuestas = [];
+
+    respuestas.push(total);
+
+
+    while (respuestas.length < 3) {
+
+        let diferencia =
+            Math.floor(Math.random() * 5 + 1) * 100;
+
+        let respuestaFalsa;
+
+        if (Math.random() < 0.5) {
+
+            respuestaFalsa = total + diferencia;
+
+        } else {
+
+            respuestaFalsa = total - diferencia;
+
+        }
+
+
+        if (
+            respuestaFalsa > 0 &&
+            !respuestas.includes(respuestaFalsa)
+        ) {
+
+            respuestas.push(respuestaFalsa);
+
+        }
+
+    }
+
+
+    /*
+        MEZCLAR RESPUESTAS
+    */
+
+    respuestas.sort(() => Math.random() - 0.5);
+
+
+    /*
+        MOSTRAR BOTONES
+    */
+
+    respuestas.forEach(function(respuesta) {
+
+        const boton = document.createElement("button");
+
+        boton.innerText = pesos(respuesta);
+
+        boton.onclick = function() {
+
+            comprobarRespuesta(respuesta);
+
+        };
+
+        opciones.appendChild(boton);
+
+    });
+
+}
+
+
+/*
+    COMPROBAR RESPUESTA
+*/
+
+function comprobarRespuesta(respuesta) {
+
+    const resultado =
+        document.getElementById("resultado");
+
+
+    if (respuesta === respuestaCorrecta) {
+
+        puntos++;
+
+        document.getElementById("puntos").innerText =
+            puntos;
+
+        resultado.innerHTML =
+            "🎉 ¡Muy bien!<br><br>" +
+            "La respuesta correcta es " +
+            pesos(respuestaCorrecta);
+
+        resultado.className = "correcto";
+
+    } else {
+
+        resultado.innerHTML =
+            "🙂 Inténtalo nuevamente.<br><br>" +
+            "Mira nuevamente las monedas y billetes.";
+
+        resultado.className = "incorrecto";
+
+    }
+
+}
+
+
+/*
+    PRIMER EJERCICIO
+*/
+
+nuevoEjercicio();
+
+</script>
+
+</body>
+
+</html>

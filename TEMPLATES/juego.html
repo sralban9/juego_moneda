@@ -1,0 +1,2329 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Juego del dinero - Mi Dinero COP</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/estilo.css') }}">
+
+    <style>
+
+        /* =========================
+           ESTADO
+        ========================= */
+
+        .estado-juego {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .estado {
+            background: white;
+            padding: 18px;
+            border-radius: 15px;
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.10);
+            font-size: 19px;
+        }
+
+        .estado strong {
+            display: block;
+            font-size: 27px;
+            margin-top: 7px;
+        }
+
+
+        /* =========================
+           NIVEL
+        ========================= */
+
+        .nivel {
+            background: #222;
+            color: white;
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        .nivel h2 {
+            margin: 0 0 8px;
+        }
+
+
+        /* =========================
+           PROGRESO
+        ========================= */
+
+        .barra {
+            width: 100%;
+            height: 18px;
+            background: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progreso {
+            height: 100%;
+            width: 0%;
+            background: #4caf50;
+            transition: width 0.4s;
+        }
+
+
+        /* =========================
+           PRODUCTOS
+        ========================= */
+
+        .productos-mision {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .producto-mision {
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 18px;
+            min-width: 180px;
+            box-shadow:
+                0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .producto-icono {
+            font-size: 70px;
+        }
+
+        .producto-mision h3 {
+            font-size: 22px;
+            margin: 10px 0;
+        }
+
+        .producto-mision strong {
+            font-size: 25px;
+        }
+
+
+        /* =========================
+           DINERO
+        ========================= */
+
+        .dinero-real {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+            margin: 25px 0;
+        }
+
+        .dinero-item {
+            width: 175px;
+            min-height: 150px;
+
+            background: #f8f8f8;
+
+            border-radius: 18px;
+
+            padding: 15px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            box-shadow:
+                0 4px 12px rgba(0,0,0,0.10);
+
+            position: relative;
+        }
+
+        .dinero-item img {
+            width: 135px;
+            height: 85px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .dinero-item strong {
+            font-size: 23px;
+        }
+
+        .dinero-seleccionable {
+            cursor: pointer;
+            border: 4px solid transparent;
+            transition: 0.2s;
+        }
+
+        .dinero-seleccionable:hover {
+            transform: scale(1.05);
+        }
+
+        .dinero-seleccionado {
+            border: 4px solid #2196f3;
+            background: #e3f2fd;
+            transform: scale(1.05);
+        }
+
+        .dinero-seleccionado::after {
+            content: "✓";
+
+            position: absolute;
+
+            top: 7px;
+            right: 8px;
+
+            width: 32px;
+            height: 32px;
+
+            border-radius: 50%;
+
+            background: #2196f3;
+            color: white;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           TOTAL
+        ========================= */
+
+        .total-pago {
+            background: #eef7ff;
+            padding: 22px;
+            border-radius: 18px;
+            margin: 25px 0;
+        }
+
+        .total-pago strong {
+            font-size: 35px;
+        }
+
+
+        /* =========================
+           BOTONES
+        ========================= */
+
+        .botones-juego {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .botones-juego button {
+            padding: 18px 28px;
+            border: none;
+            border-radius: 13px;
+            font-size: 21px;
+            cursor: pointer;
+        }
+
+        .boton-pagar {
+            background: #2196f3;
+            color: white;
+        }
+
+        .boton-limpiar {
+            background: #ddd;
+        }
+
+        .boton-nueva {
+            background: #222;
+            color: white;
+        }
+
+        .botones-juego button:hover {
+            transform: scale(1.04);
+        }
+
+
+        /* =========================
+           RESULTADO
+        ========================= */
+
+        .resultado-juego {
+            min-height: 70px;
+            margin: 25px 0;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .correcto {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .incorrecto {
+            background: #ffebee;
+            color: #b71c1c;
+        }
+
+
+        /* =========================
+           CAMBIO
+        ========================= */
+
+        .zona-cambio {
+            background: #fff8e1;
+            padding: 25px;
+            border-radius: 20px;
+            margin-top: 25px;
+        }
+
+
+        /* =========================
+           MENSAJE NIVEL
+        ========================= */
+
+        .mensaje-nivel {
+            display: none;
+
+            background: #e8f5e9;
+
+            padding: 30px;
+
+            border-radius: 20px;
+
+            margin: 25px 0;
+
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           INSTRUCCIÓN
+        ========================= */
+
+        .instruccion {
+            font-size: 21px;
+            line-height: 1.5;
+            max-width: 750px;
+            margin: 20px auto;
+        }
+
+
+        /* =========================
+           VIDAS
+        ========================= */
+
+        .vidas {
+            letter-spacing: 5px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="contenedor">
+
+
+    <h1>🎮 Mi Dinero COP</h1>
+
+    <p class="subtitulo">
+        Desafíos de compras con dinero colombiano
+    </p>
+
+
+    <!-- =========================
+         NIVEL
+    ========================= -->
+
+    <div class="nivel">
+
+        <h2 id="nombre-nivel">
+            Nivel 1
+        </h2>
+
+        <div id="descripcion-nivel">
+            Compras sencillas
+        </div>
+
+        <div class="barra">
+
+            <div id="progreso"
+                 class="progreso">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ESTADO
+    ========================= -->
+
+    <div class="estado-juego">
+
+
+        <div class="estado">
+
+            💰 Saldo
+
+            <strong id="saldo">
+                $10.000
+            </strong>
+
+        </div>
+
+
+        <div class="estado">
+
+            ⭐ Puntos
+
+            <strong id="puntos">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="estado">
+
+            🔥 Racha
+
+            <strong id="racha">
+                0
+            </strong>
+
+        </div>
+
+
+        <div class="estado">
+
+            ❤️ Vidas
+
+            <strong id="vidas"
+                    class="vidas">
+
+                ❤️❤️❤️
+
+            </strong>
+
+        </div>
+
+
+        <div class="estado">
+
+            🎯 Misión
+
+            <strong id="mision">
+                1
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         EJERCICIO
+    ========================= -->
+
+    <div class="ejercicio">
+
+
+        <h2>
+            🛒 Tu compra
+        </h2>
+
+
+        <p class="instruccion">
+
+            Selecciona las monedas y billetes
+            necesarios para pagar.
+
+        </p>
+
+
+        <!-- PRODUCTOS -->
+
+        <div id="productos"
+             class="productos-mision">
+        </div>
+
+
+        <!-- PRECIO TOTAL -->
+
+        <div class="total-pago">
+
+            Total de la compra:
+
+            <strong id="precio-total">
+                $0
+            </strong>
+
+        </div>
+
+
+        <!-- BILLETERA -->
+
+        <h2>
+            👛 Tu billetera
+        </h2>
+
+
+        <p class="instruccion">
+
+            Puedes escoger varias monedas
+            y billetes.
+
+        </p>
+
+
+        <div id="billetera"
+             class="dinero-real">
+        </div>
+
+
+        <!-- DINERO SELECCIONADO -->
+
+        <h2>
+            💵 Dinero seleccionado
+        </h2>
+
+
+        <div id="dinero-elegido"
+             class="dinero-real">
+        </div>
+
+
+        <!-- TOTAL PAGO -->
+
+        <div class="total-pago">
+
+            Total que vas a pagar:
+
+            <strong id="total-pago">
+                $0
+            </strong>
+
+        </div>
+
+
+        <!-- RESULTADO -->
+
+        <div id="resultado-juego"
+             class="resultado-juego">
+        </div>
+
+
+        <!-- CAMBIO -->
+
+        <div id="zona-cambio"
+             class="zona-cambio">
+        </div>
+
+
+        <!-- MENSAJE DE NIVEL -->
+
+        <div id="mensaje-nivel"
+             class="mensaje-nivel">
+        </div>
+
+
+        <!-- BOTONES -->
+
+        <div class="botones-juego">
+
+
+            <button
+                class="boton-pagar"
+                onclick="pagar()">
+
+                💳 Pagar
+
+            </button>
+
+
+            <button
+                class="boton-limpiar"
+                onclick="limpiarPago()">
+
+                🔄 Quitar selección
+
+            </button>
+
+
+            <button
+                class="boton-nueva"
+                onclick="nuevaMision()">
+
+                🎯 Nueva misión
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+    <a href="/"
+       class="volver">
+
+        ⬅ Volver al inicio
+
+    </a>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =====================================================
+   DINERO COLOMBIANO
+===================================================== */
+
+
+const dineroDisponible = [
+
+    {
+        valor: 100,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_100.jpg') }}",
+        nombre: "Moneda de $100"
+    },
+
+    {
+        valor: 500,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_500.jpg') }}",
+        nombre: "Moneda de $500"
+    },
+
+    {
+        valor: 1000,
+        imagen: "{{ url_for('static', filename='img/monedas/moneda_1000.jpg') }}",
+        nombre: "Moneda de $1.000"
+    },
+
+    {
+        valor: 2000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_2000.jpg') }}",
+        nombre: "Billete de $2.000"
+    },
+
+    {
+        valor: 5000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_5000.jpg') }}",
+        nombre: "Billete de $5.000"
+    },
+
+    {
+        valor: 10000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_10000.jpg') }}",
+        nombre: "Billete de $10.000"
+    },
+
+    {
+        valor: 20000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_20000.jpg') }}",
+        nombre: "Billete de $20.000"
+    },
+
+    {
+        valor: 50000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_50000.jpg') }}",
+        nombre: "Billete de $50.000"
+    },
+
+    {
+        valor: 100000,
+        imagen: "{{ url_for('static', filename='img/billetes/billete_100000.jpg') }}",
+        nombre: "Billete de $100.000"
+    }
+
+];
+
+
+
+/* =====================================================
+   20 PRODUCTOS
+===================================================== */
+
+
+const productos = [
+
+    {
+        nombre: "una manzana",
+        icono: "🍎",
+        precio: 500
+    },
+
+    {
+        nombre: "un jugo",
+        icono: "🧃",
+        precio: 1000
+    },
+
+    {
+        nombre: "un banano",
+        icono: "🍌",
+        precio: 1500
+    },
+
+    {
+        nombre: "un pan",
+        icono: "🥖",
+        precio: 2000
+    },
+
+    {
+        nombre: "galletas",
+        icono: "🍪",
+        precio: 2500
+    },
+
+    {
+        nombre: "una leche",
+        icono: "🥛",
+        precio: 3000
+    },
+
+    {
+        nombre: "lápices",
+        icono: "✏️",
+        precio: 3500
+    },
+
+    {
+        nombre: "un cepillo dental",
+        icono: "🪥",
+        precio: 6000
+    },
+
+    {
+        nombre: "champú",
+        icono: "🧴",
+        precio: 8000
+    },
+
+    {
+        nombre: "un cuaderno",
+        icono: "📓",
+        precio: 5000
+    },
+
+    {
+        nombre: "una camiseta",
+        icono: "👕",
+        precio: 10000
+    },
+
+    {
+        nombre: "un juguete",
+        icono: "🧸",
+        precio: 15000
+    },
+
+    {
+        nombre: "unos libros",
+        icono: "📚",
+        precio: 18000
+    },
+
+    {
+        nombre: "una mochila",
+        icono: "🎒",
+        precio: 20000
+    },
+
+    {
+        nombre: "una pizza",
+        icono: "🍕",
+        precio: 22000
+    },
+
+    {
+        nombre: "una camiseta deportiva",
+        icono: "👚",
+        precio: 25000
+    },
+
+    {
+        nombre: "un balón",
+        icono: "⚽",
+        precio: 30000
+    },
+
+    {
+        nombre: "unos audífonos",
+        icono: "🎧",
+        precio: 40000
+    },
+
+    {
+        nombre: "unos zapatos",
+        icono: "👟",
+        precio: 50000
+    },
+
+    {
+        nombre: "un videojuego",
+        icono: "🎮",
+        precio: 60000
+    }
+
+];
+
+
+
+/* =====================================================
+   NIVELES
+===================================================== */
+
+
+const niveles = [
+
+    {
+        nivel: 1,
+        nombre: "Nivel 1",
+        descripcion: "Compras sencillas",
+        precioMaximo: 3000,
+        productosPorCompra: 1,
+        puntosNecesarios: 30
+    },
+
+    {
+        nivel: 2,
+        nombre: "Nivel 2",
+        descripcion: "Combina monedas y billetes",
+        precioMaximo: 10000,
+        productosPorCompra: 1,
+        puntosNecesarios: 70
+    },
+
+    {
+        nivel: 3,
+        nombre: "Nivel 3",
+        descripcion: "Compras difíciles y cambios grandes",
+        precioMaximo: 30000,
+        productosPorCompra: 2,
+        puntosNecesarios: 120
+    },
+
+    {
+        nivel: 4,
+        nombre: "Nivel 4",
+        descripcion: "Desafío experto",
+        precioMaximo: 60000,
+        productosPorCompra: 3,
+        puntosNecesarios: 180
+    }
+
+];
+
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+
+let saldo = 100000;
+
+let puntos = 0;
+
+let racha = 0;
+
+let vidas = 3;
+
+let mision = 1;
+
+let nivelActual = 1;
+
+let productoActual = [];
+
+let billetera = [];
+
+let dineroSeleccionado = [];
+
+let totalPago = 0;
+
+let compraRealizada = false;
+
+
+
+/* =====================================================
+   FORMATO
+===================================================== */
+
+
+function pesos(numero) {
+
+    return "$" +
+        numero.toLocaleString("es-CO");
+
+}
+
+
+
+/* =====================================================
+   OBTENER NIVEL
+===================================================== */
+
+
+function obtenerNivel() {
+
+    if (puntos >= 180) {
+
+        return 4;
+
+    }
+
+    if (puntos >= 120) {
+
+        return 3;
+
+    }
+
+    if (puntos >= 70) {
+
+        return 2;
+
+    }
+
+    return 1;
+
+}
+
+
+
+/* =====================================================
+   ACTUALIZAR NIVEL
+===================================================== */
+
+
+function actualizarNivel() {
+
+    nivelActual =
+        obtenerNivel();
+
+
+    const nivel =
+        niveles[nivelActual - 1];
+
+
+    document.getElementById(
+        "nombre-nivel"
+    ).innerText =
+        nivel.nombre;
+
+
+    document.getElementById(
+        "descripcion-nivel"
+    ).innerText =
+        nivel.descripcion;
+
+
+    let anterior = 0;
+
+    if (nivelActual === 2) {
+        anterior = 30;
+    }
+
+    if (nivelActual === 3) {
+        anterior = 70;
+    }
+
+    if (nivelActual === 4) {
+        anterior = 120;
+    }
+
+
+    let porcentaje;
+
+
+    if (nivelActual === 4) {
+
+        porcentaje = 100;
+
+    } else {
+
+        const siguiente =
+            nivel.puntosNecesarios;
+
+        porcentaje =
+            (
+                (puntos - anterior) /
+                (siguiente - anterior)
+            ) * 100;
+
+    }
+
+
+    porcentaje =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                porcentaje
+            )
+        );
+
+
+    document.getElementById(
+        "progreso"
+    ).style.width =
+        porcentaje + "%";
+
+}
+
+
+
+/* =====================================================
+   SELECCIONAR PRODUCTOS
+===================================================== */
+
+
+function seleccionarProductos() {
+
+
+    productoActual = [];
+
+
+    const nivel =
+        niveles[nivelActual - 1];
+
+
+    /*
+       Productos disponibles
+       según el nivel.
+    */
+
+    let disponibles =
+        productos.filter(
+            function(producto) {
+
+                return producto.precio <=
+                    nivel.precioMaximo;
+
+            }
+        );
+
+
+    /*
+       Mezclar
+    */
+
+    disponibles.sort(
+        function() {
+
+            return Math.random() - 0.5;
+
+        }
+    );
+
+
+    /*
+       Elegir productos
+    */
+
+    for (
+        let i = 0;
+        i < nivel.productosPorCompra;
+        i++
+    ) {
+
+        if (disponibles[i]) {
+
+            productoActual.push(
+                disponibles[i]
+            );
+
+        }
+
+    }
+
+
+
+    /*
+       Mostrar productos
+    */
+
+    const contenedor =
+        document.getElementById(
+            "productos"
+        );
+
+
+    contenedor.innerHTML = "";
+
+
+    productoActual.forEach(
+        function(producto) {
+
+
+            const tarjeta =
+                document.createElement(
+                    "div"
+                );
+
+
+            tarjeta.className =
+                "producto-mision";
+
+
+            tarjeta.innerHTML = `
+
+                <div class="producto-icono">
+                    ${producto.icono}
+                </div>
+
+                <h3>
+                    ${producto.nombre}
+                </h3>
+
+                <strong>
+                    ${pesos(producto.precio)}
+                </strong>
+
+            `;
+
+
+            contenedor.appendChild(
+                tarjeta
+            );
+
+        }
+    );
+
+
+    /*
+       Precio total
+    */
+
+    const total =
+        productoActual.reduce(
+            function(suma, producto) {
+
+                return suma +
+                    producto.precio;
+
+            },
+            0
+        );
+
+
+    document.getElementById(
+        "precio-total"
+    ).innerText =
+        pesos(total);
+
+}
+
+
+
+/* =====================================================
+   CREAR BILLETERA
+===================================================== */
+
+
+function crearBilletera() {
+
+
+    billetera = [];
+
+
+    let restante =
+        saldo;
+
+
+    /*
+       No crear una billetera
+       exageradamente grande.
+    */
+
+    while (
+        restante > 0 &&
+        billetera.length < 15
+    ) {
+
+
+        const disponibles =
+            dineroDisponible.filter(
+                function(dinero) {
+
+                    return dinero.valor <=
+                        restante;
+
+                }
+            );
+
+
+        if (
+            disponibles.length === 0
+        ) {
+
+            break;
+
+        }
+
+
+        const elegido =
+            disponibles[
+                Math.floor(
+                    Math.random() *
+                    disponibles.length
+                )
+            ];
+
+
+        billetera.push(
+            elegido
+        );
+
+
+        restante -=
+            elegido.valor;
+
+    }
+
+
+    /*
+       Si todavía queda dinero,
+       completamos con denominaciones.
+    */
+
+    while (
+        restante > 0
+    ) {
+
+
+        const disponibles =
+            dineroDisponible.filter(
+                function(dinero) {
+
+                    return dinero.valor <=
+                        restante;
+
+                }
+            );
+
+
+        if (
+            disponibles.length === 0
+        ) {
+
+            break;
+
+        }
+
+
+        const elegido =
+            disponibles[
+                Math.floor(
+                    Math.random() *
+                    disponibles.length
+                )
+            ];
+
+
+        billetera.push(
+            elegido
+        );
+
+
+        restante -=
+            elegido.valor;
+
+    }
+
+}
+
+
+
+/* =====================================================
+   MOSTRAR BILLETERA
+===================================================== */
+
+
+function mostrarBilletera() {
+
+
+    const contenedor =
+        document.getElementById(
+            "billetera"
+        );
+
+
+    contenedor.innerHTML = "";
+
+
+    if (
+        billetera.length === 0
+    ) {
+
+        contenedor.innerHTML =
+            "<p>👛 Billetera vacía</p>";
+
+        return;
+
+    }
+
+
+    billetera.forEach(
+        function(dinero, indice) {
+
+
+            const tarjeta =
+                document.createElement(
+                    "div"
+                );
+
+
+            tarjeta.className =
+                "dinero-item dinero-seleccionable";
+
+
+            const seleccionado =
+                dineroSeleccionado.some(
+                    function(elemento) {
+
+                        return elemento.indice ===
+                            indice;
+
+                    }
+                );
+
+
+            if (seleccionado) {
+
+                tarjeta.classList.add(
+                    "dinero-seleccionado"
+                );
+
+            }
+
+
+            tarjeta.innerHTML = `
+
+                <img
+                    src="${dinero.imagen}"
+                    alt="${dinero.nombre}"
+                >
+
+                <strong>
+                    ${pesos(dinero.valor)}
+                </strong>
+
+                <p>
+                    ${
+                        seleccionado
+                        ? "✅ Seleccionado"
+                        : "👆 Seleccionar"
+                    }
+                </p>
+
+            `;
+
+
+            tarjeta.onclick =
+                function() {
+
+                    seleccionarDinero(
+                        indice
+                    );
+
+                };
+
+
+            contenedor.appendChild(
+                tarjeta
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   SELECCIONAR DINERO
+===================================================== */
+
+
+function seleccionarDinero(
+    indice
+) {
+
+
+    if (compraRealizada) {
+
+        return;
+
+    }
+
+
+    const posicion =
+        dineroSeleccionado.findIndex(
+            function(elemento) {
+
+                return elemento.indice ===
+                    indice;
+
+            }
+        );
+
+
+    /*
+       Quitar
+    */
+
+    if (posicion !== -1) {
+
+
+        totalPago -=
+            dineroSeleccionado[
+                posicion
+            ].dinero.valor;
+
+
+        dineroSeleccionado.splice(
+            posicion,
+            1
+        );
+
+
+    }
+
+    /*
+       Agregar
+    */
+
+    else {
+
+
+        const dinero =
+            billetera[indice];
+
+
+        dineroSeleccionado.push({
+
+            indice: indice,
+
+            dinero: dinero
+
+        });
+
+
+        totalPago +=
+            dinero.valor;
+
+    }
+
+
+    actualizarPago();
+
+    mostrarBilletera();
+
+}
+
+
+
+/* =====================================================
+   ACTUALIZAR PAGO
+===================================================== */
+
+
+function actualizarPago() {
+
+
+    document.getElementById(
+        "total-pago"
+    ).innerText =
+        pesos(totalPago);
+
+
+    const contenedor =
+        document.getElementById(
+            "dinero-elegido"
+        );
+
+
+    contenedor.innerHTML = "";
+
+
+    dineroSeleccionado.forEach(
+        function(elemento) {
+
+
+            const tarjeta =
+                document.createElement(
+                    "div"
+                );
+
+
+            tarjeta.className =
+                "dinero-item";
+
+
+            tarjeta.innerHTML = `
+
+                <img
+                    src="${elemento.dinero.imagen}"
+                    alt="${elemento.dinero.nombre}"
+                >
+
+                <strong>
+                    ${pesos(
+                        elemento.dinero.valor
+                    )}
+                </strong>
+
+            `;
+
+
+            contenedor.appendChild(
+                tarjeta
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   PAGAR
+===================================================== */
+
+
+function pagar() {
+
+
+    const resultado =
+        document.getElementById(
+            "resultado-juego"
+        );
+
+
+    if (compraRealizada) {
+
+        return;
+
+    }
+
+
+    /*
+       Sin dinero
+    */
+
+    if (totalPago === 0) {
+
+
+        resultado.innerHTML =
+            "👆 Selecciona monedas o billetes.";
+
+        resultado.className =
+            "resultado-juego incorrecto";
+
+        return;
+
+    }
+
+
+    /*
+       Calcular precio
+    */
+
+    const precio =
+        productoActual.reduce(
+            function(suma, producto) {
+
+                return suma +
+                    producto.precio;
+
+            },
+            0
+        );
+
+
+    /*
+       Dinero insuficiente
+    */
+
+    if (totalPago < precio) {
+
+
+        vidas--;
+
+
+        racha = 0;
+
+
+        actualizarEstado();
+
+
+        resultado.innerHTML =
+
+            "❌ No tienes suficiente dinero.<br><br>" +
+
+            "Compra: " +
+            pesos(precio) +
+
+            "<br>" +
+
+            "Seleccionaste: " +
+            pesos(totalPago);
+
+
+        resultado.className =
+            "resultado-juego incorrecto";
+
+
+        if (vidas <= 0) {
+
+            terminarJuego();
+
+        }
+
+
+        return;
+
+    }
+
+
+    /*
+       Cambio
+    */
+
+    const cambio =
+        totalPago - precio;
+
+
+    /*
+       Guardar pago
+    */
+
+    const pagoRealizado =
+        totalPago;
+
+
+    /*
+       Quitar dinero
+       utilizado
+    */
+
+    const indices =
+        dineroSeleccionado
+            .map(
+                function(elemento) {
+
+                    return elemento.indice;
+
+                }
+            )
+            .sort(
+                function(a, b) {
+
+                    return b - a;
+
+                }
+            );
+
+
+    indices.forEach(
+        function(indice) {
+
+            billetera.splice(
+                indice,
+                1
+            );
+
+        }
+    );
+
+
+    /*
+       Restar compra
+    */
+
+    saldo -= precio;
+
+
+    /*
+       Agregar cambio
+    */
+
+    if (cambio > 0) {
+
+        agregarCambio(
+            cambio
+        );
+
+    }
+
+
+    /*
+       Puntos
+    */
+
+    let puntosGanados = 10;
+
+
+    if (
+        nivelActual === 2
+    ) {
+
+        puntosGanados = 15;
+
+    }
+
+
+    if (
+        nivelActual === 3
+    ) {
+
+        puntosGanados = 20;
+
+    }
+
+
+    if (
+        nivelActual === 4
+    ) {
+
+        puntosGanados = 30;
+
+    }
+
+
+    puntos +=
+        puntosGanados;
+
+
+    racha++;
+
+
+    mision++;
+
+
+    compraRealizada = true;
+
+
+    /*
+       Resultado
+    */
+
+    resultado.innerHTML =
+
+        "🎉 ¡Compra correcta!<br><br>" +
+
+        "Pagaste: " +
+
+        pesos(pagoRealizado) +
+
+        "<br>" +
+
+        "Ganaste: +" +
+
+        puntosGanados +
+
+        " puntos";
+
+
+    resultado.className =
+        "resultado-juego correcto";
+
+
+    /*
+       Mostrar cambio
+    */
+
+    if (cambio > 0) {
+
+        mostrarCambio(
+            cambio
+        );
+
+    }
+
+    else {
+
+        document.getElementById(
+            "zona-cambio"
+        ).innerHTML =
+
+            "<h2>✅ Pago exacto</h2>" +
+
+            "<p>No recibes cambio.</p>";
+
+    }
+
+
+    /*
+       Limpiar selección
+    */
+
+    dineroSeleccionado = [];
+
+    totalPago = 0;
+
+
+    /*
+       Actualizar pantalla
+    */
+
+    document.getElementById(
+        "total-pago"
+    ).innerText =
+        pesos(pagoRealizado);
+
+
+    actualizarEstado();
+
+
+    /*
+       Comprobar nuevo nivel
+    */
+
+    comprobarNivel();
+
+}
+
+
+
+/* =====================================================
+   AGREGAR CAMBIO
+===================================================== */
+
+
+function agregarCambio(
+    cambio
+) {
+
+
+    let restante =
+        cambio;
+
+
+    const denominaciones =
+        [...dineroDisponible].sort(
+            function(a, b) {
+
+                return b.valor -
+                    a.valor;
+
+            }
+        );
+
+
+    denominaciones.forEach(
+        function(dinero) {
+
+
+            while (
+                restante >=
+                dinero.valor
+            ) {
+
+
+                billetera.push(
+                    dinero
+                );
+
+
+                restante -=
+                    dinero.valor;
+
+            }
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   MOSTRAR CAMBIO
+===================================================== */
+
+
+function mostrarCambio(
+    cambio
+) {
+
+
+    const zona =
+        document.getElementById(
+            "zona-cambio"
+        );
+
+
+    let restante =
+        cambio;
+
+
+    let piezas = [];
+
+
+    const denominaciones =
+        [...dineroDisponible].sort(
+            function(a, b) {
+
+                return b.valor -
+                    a.valor;
+
+            }
+        );
+
+
+    denominaciones.forEach(
+        function(dinero) {
+
+
+            while (
+                restante >=
+                dinero.valor
+            ) {
+
+
+                piezas.push(
+                    dinero
+                );
+
+
+                restante -=
+                    dinero.valor;
+
+            }
+
+        }
+    );
+
+
+    zona.innerHTML = `
+
+        <h2>
+            💰 Tu cambio:
+            ${pesos(cambio)}
+        </h2>
+
+        <p>
+            Puedes recibir:
+        </p>
+
+        <div id="piezas-cambio"
+             class="dinero-real">
+        </div>
+
+    `;
+
+
+    const contenedor =
+        document.getElementById(
+            "piezas-cambio"
+        );
+
+
+    piezas.forEach(
+        function(dinero) {
+
+
+            const tarjeta =
+                document.createElement(
+                    "div"
+                );
+
+
+            tarjeta.className =
+                "dinero-item";
+
+
+            tarjeta.innerHTML = `
+
+                <img
+                    src="${dinero.imagen}"
+                    alt="${dinero.nombre}"
+                >
+
+                <strong>
+                    ${pesos(
+                        dinero.valor
+                    )}
+                </strong>
+
+            `;
+
+
+            contenedor.appendChild(
+                tarjeta
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =====================================================
+   LIMPIAR
+===================================================== */
+
+
+function limpiarPago() {
+
+
+    if (compraRealizada) {
+
+        return;
+
+    }
+
+
+    dineroSeleccionado = [];
+
+    totalPago = 0;
+
+
+    document.getElementById(
+        "total-pago"
+    ).innerText =
+        "$0";
+
+
+    document.getElementById(
+        "dinero-elegido"
+    ).innerHTML =
+        "";
+
+
+    document.getElementById(
+        "resultado-juego"
+    ).innerHTML =
+        "";
+
+
+    document.getElementById(
+        "zona-cambio"
+    ).innerHTML =
+        "";
+
+
+    mostrarBilletera();
+
+}
+
+
+
+/* =====================================================
+   ACTUALIZAR ESTADO
+===================================================== */
+
+
+function actualizarEstado() {
+
+
+    document.getElementById(
+        "saldo"
+    ).innerText =
+        pesos(saldo);
+
+
+    document.getElementById(
+        "puntos"
+    ).innerText =
+        puntos;
+
+
+    document.getElementById(
+        "racha"
+    ).innerText =
+        racha;
+
+
+    let corazones = "";
+
+
+    for (
+        let i = 0;
+        i < vidas;
+        i++
+    ) {
+
+        corazones += "❤️";
+
+    }
+
+
+    if (vidas === 0) {
+
+        corazones = "💔";
+
+    }
+
+
+    document.getElementById(
+        "vidas"
+    ).innerText =
+        corazones;
+
+
+    document.getElementById(
+        "mision"
+    ).innerText =
+        mision;
+
+
+    actualizarNivel();
+
+}
+
+
+
+/* =====================================================
+   COMPROBAR NIVEL
+===================================================== */
+
+
+function comprobarNivel() {
+
+
+    const mensaje =
+        document.getElementById(
+            "mensaje-nivel"
+        );
+
+
+    if (
+        nivelActual === 2 &&
+        puntos >= 70
+    ) {
+
+        mensaje.style.display =
+            "block";
+
+        mensaje.innerHTML =
+
+            "🟡 ¡Nivel 2 desbloqueado!<br><br>" +
+
+            "Ahora tendrás compras más difíciles.";
+
+    }
+
+
+    if (
+        nivelActual === 3 &&
+        puntos >= 120
+    ) {
+
+        mensaje.style.display =
+            "block";
+
+        mensaje.innerHTML =
+
+            "🟠 ¡Nivel 3 desbloqueado!<br><br>" +
+
+            "Ahora podrás comprar varios productos.";
+
+    }
+
+
+    if (
+        nivelActual === 4 &&
+        puntos >= 180
+    ) {
+
+        mensaje.style.display =
+            "block";
+
+        mensaje.innerHTML =
+
+            "🔴 ¡NIVEL EXPERTO!<br><br>" +
+
+            "Ahora tendrás desafíos de hasta 3 productos.";
+
+    }
+
+}
+
+
+
+/* =====================================================
+   PERDER EL JUEGO
+===================================================== */
+
+
+function terminarJuego() {
+
+
+    const resultado =
+        document.getElementById(
+            "resultado-juego"
+        );
+
+
+    resultado.innerHTML = `
+
+        💔 <strong>
+        Se terminaron tus vidas.
+        </strong>
+
+        <br><br>
+
+        ⭐ Puntos obtenidos:
+        ${puntos}
+
+        <br><br>
+
+        Pulsa
+        <strong>🎯 Nueva misión</strong>
+        para continuar.
+
+    `;
+
+
+    resultado.className =
+        "resultado-juego incorrecto";
+
+}
+
+
+
+/* =====================================================
+   NUEVA MISIÓN
+===================================================== */
+
+
+function nuevaMision() {
+
+
+    /*
+       Si no hay saldo,
+       terminamos.
+    */
+
+    if (saldo <= 0) {
+
+
+        document.getElementById(
+            "resultado-juego"
+        ).innerHTML =
+
+            "🏆 ¡Has utilizado todo tu dinero!";
+
+
+        return;
+
+    }
+
+
+    /*
+       Reiniciar
+    */
+
+    dineroSeleccionado = [];
+
+    totalPago = 0;
+
+    compraRealizada = false;
+
+
+    document.getElementById(
+        "total-pago"
+    ).innerText =
+        "$0";
+
+
+    document.getElementById(
+        "dinero-elegido"
+    ).innerHTML =
+        "";
+
+
+    document.getElementById(
+        "resultado-juego"
+    ).innerHTML =
+        "";
+
+
+    document.getElementById(
+        "zona-cambio"
+    ).innerHTML =
+        "";
+
+
+    document.getElementById(
+        "mensaje-nivel"
+    ).style.display =
+        "none";
+
+
+    /*
+       Elegir productos
+    */
+
+    seleccionarProductos();
+
+
+    /*
+       Crear billetera
+    */
+
+    crearBilletera();
+
+
+    /*
+       Mostrar
+    */
+
+    mostrarBilletera();
+
+
+    actualizarEstado();
+
+}
+
+
+
+/* =====================================================
+   INICIAR
+===================================================== */
+
+
+actualizarEstado();
+
+nuevaMision();
+
+
+</script>
+
+
+</body>
+
+</html>

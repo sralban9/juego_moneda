@@ -1,0 +1,659 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f2f6f9;
+    text-align: center;
+}
+
+.contenedor {
+    max-width: 1000px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.subtitulo {
+    font-size: 22px;
+    margin-bottom: 40px;
+}
+
+.menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.boton {
+    text-decoration: none;
+    background: white;
+    padding: 35px 20px;
+    border-radius: 20px;
+    font-size: 50px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+}
+
+.boton span {
+    display: block;
+    font-size: 22px;
+    color: #222;
+    margin-top: 15px;
+}
+
+.dinero {
+    display: flex;
+    justify-content: center;
+    gap: 35px;
+    flex-wrap: wrap;
+}
+
+.moneda {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    width: 220px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+}
+
+.circulo {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    background: #ddd;
+}
+
+.moneda h2 {
+    font-size: 30px;
+}
+
+.billetes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.billete {
+    padding: 30px;
+    border-radius: 15px;
+    background: #fff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+}
+
+.billete strong {
+    font-size: 32px;
+}
+
+.billete p {
+    font-size: 20px;
+}
+
+.volver {
+    display: inline-block;
+    margin-top: 40px;
+    padding: 15px 30px;
+    background: #222;
+    color: white;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+.ejercicio {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+}
+
+.dinero-ejemplo {
+    font-size: 35px;
+    margin: 30px;
+}
+
+.opciones {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.opciones button {
+    padding: 20px 35px;
+    font-size: 25px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.correcto {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.incorrecto {
+    font-size: 25px;
+    font-weight: bold;
+}
+.moneda img {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.moneda {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    width: 260px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+    transition: transform 0.2s;
+}
+
+.moneda:hover {
+    transform: scale(1.05);
+}
+.billete img {
+    width: 100%;
+    max-width: 330px;
+    height: auto;
+    border-radius: 8px;
+}
+/* DINERO REAL EN LOS EJERCICIOS */
+
+.dinero-real {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 35px;
+    flex-wrap: wrap;
+    margin: 35px 0;
+}
+
+.dinero-item {
+    background: #f8f8f8;
+    border-radius: 18px;
+    padding: 20px;
+    min-width: 180px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+}
+
+.dinero-item img {
+    width: 150px;
+    height: 100px;
+    object-fit: contain;
+    display: block;
+    margin: auto;
+}
+
+.dinero-item strong {
+    display: block;
+    font-size: 28px;
+    margin-top: 12px;
+}
+
+.pregunta {
+    font-size: 25px;
+    font-weight: bold;
+    margin: 30px 0;
+}
+.dinero-real {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin: 35px 0;
+}
+
+.dinero-item {
+    background: #f8f8f8;
+    border-radius: 18px;
+    padding: 15px;
+    width: 180px;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+}
+
+.dinero-item img {
+    width: 145px;
+    height: 90px;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.dinero-item strong {
+    font-size: 24px;
+}
+
+.nuevo-ejercicio {
+    margin-top: 30px;
+    padding: 18px 30px;
+    border: none;
+    border-radius: 12px;
+    background: #222;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.nuevo-ejercicio:hover {
+    opacity: 0.85;
+}
+
+.puntos {
+    margin-top: 25px;
+    font-size: 24px;
+    font-weight: bold;
+}
+.producto {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+}
+
+.producto-imagen {
+    font-size: 80px;
+    margin-bottom: 10px;
+}
+
+.precio {
+    font-size: 28px;
+}
+
+.precio strong {
+    font-size: 34px;
+}
+
+.nuevo-ejercicio {
+    margin-top: 30px;
+    padding: 18px 30px;
+    border: none;
+    border-radius: 12px;
+    background: #222;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.nuevo-ejercicio:hover {
+    opacity: 0.85;
+}
+/* ==========================================
+   DINERO PARA COMPRAR
+========================================== */
+
+.dinero-real {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin: 35px 0;
+}
+
+.dinero-item {
+    background: #f8f8f8;
+    border-radius: 18px;
+    padding: 15px;
+    width: 180px;
+    min-height: 150px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+}
+
+.dinero-item img {
+    width: 145px;
+    height: 90px;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.dinero-item strong {
+    font-size: 24px;
+}
+
+
+/* ==========================================
+   PRODUCTO
+========================================== */
+
+.producto {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+}
+
+.producto-imagen {
+    font-size: 80px;
+    margin-bottom: 10px;
+}
+
+.precio {
+    font-size: 28px;
+}
+
+.precio strong {
+    font-size: 34px;
+}
+
+
+/* ==========================================
+   BOTÓN NUEVA COMPRA
+========================================== */
+
+.nuevo-ejercicio {
+    margin-top: 30px;
+    padding: 18px 30px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: #222;
+    color: white;
+
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.nuevo-ejercicio:hover {
+    opacity: 0.85;
+}
+/* ==========================================
+   AHORRO
+========================================== */
+
+.meta {
+    background: #f8f8f8;
+    padding: 25px;
+    border-radius: 20px;
+    margin: 25px 0 35px;
+}
+
+.meta-icono {
+    font-size: 70px;
+}
+
+.meta strong {
+    display: block;
+    font-size: 40px;
+    margin-top: 10px;
+}
+
+.dinero-seleccionable {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.dinero-seleccionable:hover {
+    transform: scale(1.05);
+}
+
+.dinero-elegido {
+    border: 5px solid #222;
+    transform: scale(1.05);
+}
+
+.barra {
+    width: 90%;
+    height: 30px;
+    background: #ddd;
+    border-radius: 20px;
+    margin: 25px auto;
+    overflow: hidden;
+}
+
+.progreso {
+    height: 100%;
+    width: 0%;
+    background: #222;
+    border-radius: 20px;
+    transition: width 0.4s;
+}
+
+.mensaje {
+    font-size: 23px;
+    font-weight: bold;
+    margin: 25px;
+    min-height: 60px;
+}
+
+.meta-conseguida {
+    font-size: 28px;
+}
+
+.acciones-ahorro {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.boton-ahorro,
+.boton-limpiar {
+    padding: 18px 28px;
+    border: none;
+    border-radius: 12px;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.boton-ahorro:hover,
+.boton-limpiar:hover {
+    opacity: 0.85;
+}
+/* ==========================================
+   NECESIDAD O DESEO
+========================================== */
+
+.objeto-imagen {
+    font-size: 110px;
+    margin: 20px 0;
+}
+
+.descripcion {
+    font-size: 22px;
+    max-width: 650px;
+    margin: 20px auto 35px;
+    line-height: 1.5;
+}
+
+.opciones-necesidad {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin: 30px 0;
+}
+
+.opciones-necesidad button {
+    padding: 22px 35px;
+    border: none;
+    border-radius: 15px;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.opciones-necesidad button:hover {
+    transform: scale(1.05);
+}
+
+.resultado-necesidad {
+    min-height: 80px;
+    margin: 25px;
+    font-size: 25px;
+    font-weight: bold;
+}
+/* ==========================================
+   JUEGO DEL DINERO
+========================================== */
+
+.estado-juego {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(180px, 1fr));
+
+    gap: 15px;
+
+    margin-bottom: 30px;
+}
+
+.estado-juego div {
+    background: white;
+    padding: 20px;
+
+    border-radius: 15px;
+
+    font-size: 21px;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,0.10);
+}
+
+.estado-juego strong {
+    display: block;
+
+    font-size: 27px;
+
+    margin-top: 8px;
+}
+
+.mision-imagen {
+    font-size: 100px;
+
+    margin: 15px 0;
+}
+
+.precio-juego {
+    font-size: 27px;
+
+    margin: 25px;
+}
+
+.precio-juego strong {
+    font-size: 35px;
+}
+
+.opciones-juego {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 20px;
+
+    flex-wrap: wrap;
+
+    margin: 30px 0;
+}
+
+.opciones-juego button {
+    padding: 22px 35px;
+
+    border: none;
+
+    border-radius: 15px;
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+.opciones-juego button:hover {
+    transform: scale(1.05);
+}
+
+.resultado-juego {
+    min-height: 90px;
+
+    margin: 25px;
+
+    padding: 20px;
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    border-radius: 15px;
+}
+/* ==========================================
+   JUEGO - SELECCIONAR DINERO
+========================================== */
+
+.dinero-seleccionable {
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.dinero-seleccionable:hover {
+    transform: scale(1.06);
+    box-shadow: 0 7px 18px rgba(0,0,0,0.18);
+}
+
+.zona-cambio {
+    margin-top: 30px;
+    padding: 25px;
+    background: #f8f8f8;
+    border-radius: 20px;
+}
+
+.zona-cambio h2 {
+    font-size: 30px;
+}
+
+#dinero-elegido {
+    min-height: 80px;
+    padding: 15px;
+    background: #f8f8f8;
+    border-radius: 15px;
+}
+
+#dinero-elegido:empty::after {
+    content: "Selecciona dinero de tu billetera";
+    font-size: 20px;
+    color: #777;
+}
+.dinero-seleccionable {
+    cursor: pointer;
+    transition: 0.2s;
+    border: 4px solid transparent;
+}
+
+.dinero-seleccionable:hover {
+    transform: scale(1.05);
+}
+
+.dinero-seleccionado {
+    border: 4px solid #2196f3;
+    background: #e3f2fd;
+    transform: scale(1.05);
+}
+
+.dinero-item {
+    position: relative;
+}

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Necesidad o deseo - Mi Dinero COP</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/estilo.css') }}">
+
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <h1>🧠 Necesidad o deseo</h1>
+
+    <p class="subtitulo">
+        Aprende a diferenciar lo que necesitas de lo que quieres.
+    </p>
+
+
+    <div class="ejercicio">
+
+        <div id="objeto-imagen"
+             class="objeto-imagen">
+            🍎
+        </div>
+
+        <h2 id="objeto-nombre">
+            Comida
+        </h2>
+
+        <p id="objeto-descripcion"
+           class="descripcion">
+
+            La comida es importante para nuestro cuerpo.
+
+        </p>
+
+
+        <h2>
+            ¿Es una necesidad o un deseo?
+        </h2>
+
+
+        <div class="opciones-necesidad">
+
+            <button
+                onclick="responder('necesidad')">
+
+                🏠 Necesidad
+
+            </button>
+
+
+            <button
+                onclick="responder('deseo')">
+
+                🎮 Deseo
+
+            </button>
+
+        </div>
+
+
+        <div id="resultado"
+             class="resultado-necesidad">
+        </div>
+
+
+        <div class="puntos">
+
+            ⭐ Puntos:
+            <span id="puntos">0</span>
+
+        </div>
+
+
+        <button
+            class="nuevo-ejercicio"
+            onclick="nuevoEjercicio()">
+
+            🔄 Nueva situación
+
+        </button>
+
+    </div>
+
+
+    <a href="/" class="volver">
+
+        ⬅ Volver al inicio
+
+    </a>
+
+</div>
+
+
+<script>
+
+// ==========================================
+// SITUACIONES
+// ==========================================
+
+const situaciones = [
+
+    {
+        nombre: "Comida",
+        imagen: "🍎",
+        descripcion:
+            "Necesitamos alimentos para mantener nuestro cuerpo saludable.",
+        tipo: "necesidad"
+    },
+
+    {
+        nombre: "Agua",
+        imagen: "💧",
+        descripcion:
+            "El agua es necesaria para vivir.",
+        tipo: "necesidad"
+    },
+
+    {
+        nombre: "Medicamentos",
+        imagen: "💊",
+        descripcion:
+            "Algunas personas necesitan medicamentos para cuidar su salud.",
+        tipo: "necesidad"
+    },
+
+    {
+        nombre: "Útiles escolares",
+        imagen: "📚",
+        descripcion:
+            "Los útiles pueden ser necesarios para estudiar.",
+        tipo: "necesidad"
+    },
+
+    {
+        nombre: "Ropa",
+        imagen: "👕",
+        descripcion:
+            "La ropa puede ser necesaria para proteger nuestro cuerpo.",
+        tipo: "necesidad"
+    },
+
+    {
+        nombre: "Videojuego",
+        imagen: "🎮",
+        descripcion:
+            "Un videojuego puede ser divertido, pero no es necesario para vivir.",
+        tipo: "deseo"
+    },
+
+    {
+        nombre: "Caramelo",
+        imagen: "🍭",
+        descripcion:
+            "Un caramelo puede gustarnos, pero podemos vivir sin él.",
+        tipo: "deseo"
+    },
+
+    {
+        nombre: "Juguete",
+        imagen: "🧸",
+        descripcion:
+            "Un juguete puede divertirnos, pero no es indispensable.",
+        tipo: "deseo"
+    },
+
+    {
+        nombre: "Televisor nuevo",
+        imagen: "📺",
+        descripcion:
+            "Un televisor nuevo puede ser un gusto o deseo.",
+        tipo: "deseo"
+    },
+
+    {
+        nombre: "Helado",
+        imagen: "🍦",
+        descripcion:
+            "Un helado puede ser delicioso, pero no es indispensable.",
+        tipo: "deseo"
+    }
+
+];
+
+
+// ==========================================
+// VARIABLES
+// ==========================================
+
+let situacionActual;
+
+let puntos = 0;
+
+
+// ==========================================
+// NUEVA SITUACIÓN
+// ==========================================
+
+function nuevoEjercicio() {
+
+    const resultado =
+        document.getElementById("resultado");
+
+
+    resultado.innerHTML = "";
+
+    resultado.className =
+        "resultado-necesidad";
+
+
+    situacionActual =
+        situaciones[
+            Math.floor(
+                Math.random() *
+                situaciones.length
+            )
+        ];
+
+
+    document.getElementById(
+        "objeto-imagen"
+    ).innerText =
+        situacionActual.imagen;
+
+
+    document.getElementById(
+        "objeto-nombre"
+    ).innerText =
+        situacionActual.nombre;
+
+
+    document.getElementById(
+        "objeto-descripcion"
+    ).innerText =
+        situacionActual.descripcion;
+
+}
+
+
+// ==========================================
+// RESPONDER
+// ==========================================
+
+function responder(respuesta) {
+
+    const resultado =
+        document.getElementById(
+            "resultado"
+        );
+
+
+    if (
+        respuesta ===
+        situacionActual.tipo
+    ) {
+
+        puntos++;
+
+
+        document.getElementById(
+            "puntos"
+        ).innerText =
+            puntos;
+
+
+        if (
+            situacionActual.tipo ===
+            "necesidad"
+        ) {
+
+            resultado.innerHTML =
+
+                "🎉 ¡Muy bien!<br><br>" +
+
+                "<strong>" +
+                situacionActual.nombre +
+                "</strong> es una necesidad.";
+
+
+        } else {
+
+            resultado.innerHTML =
+
+                "🎉 ¡Correcto!<br><br>" +
+
+                "<strong>" +
+                situacionActual.nombre +
+                "</strong> es un deseo.";
+
+        }
+
+
+        resultado.className =
+            "correcto";
+
+
+    } else {
+
+        if (
+            situacionActual.tipo ===
+            "necesidad"
+        ) {
+
+            resultado.innerHTML =
+
+                "🙂 Casi.<br><br>" +
+
+                situacionActual.nombre +
+                " es una <strong>necesidad</strong>.";
+
+        } else {
+
+            resultado.innerHTML =
+
+                "🙂 Casi.<br><br>" +
+
+                situacionActual.nombre +
+                " es un <strong>deseo</strong>.";
+
+        }
+
+
+        resultado.className =
+            "incorrecto";
+
+    }
+
+}
+
+
+// ==========================================
+// INICIAR
+// ==========================================
+
+nuevoEjercicio();
+
+</script>
+
+</body>
+
+</html>
